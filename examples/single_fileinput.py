@@ -177,7 +177,6 @@ def FileApp(items: List[FileInputItem]):
         # NewItem(on_new_item)
         NewItemAsyncIORunTimeError(on_new_item)
 
-
         # add items here such that user can see and delete them.
         # for index, item in enumerate(items):
         #     def on_item_change(changed_item, index=index):
