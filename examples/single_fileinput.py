@@ -136,10 +136,16 @@ def NewItemAsyncIORunTimeError(on_add: Callable[[FileInputItem], None]):
             return
         if not file_info:
             return
+        if not df.empty:
+            print('adding df', len(df))
 
+    def read_df():
+        if file_info:
         # TODO multiple readers
-        df = pd.read_csv(file_info[0]["file_obj"])
-        set_df(df)
+            df = pd.read_csv(file_info[0]["file_obj"])
+            set_df(df)
+
+    solara.use_thread(read_df, [file_info])
 
     # v.BtnWithClick
     with solara.Row() as main:
