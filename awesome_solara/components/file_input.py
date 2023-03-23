@@ -1,7 +1,5 @@
 """
 Reactive FileInput widget inspired by the solara FileDrop widget.
-Currently hardcoded to be limited to one file.
-
 """
 
 
