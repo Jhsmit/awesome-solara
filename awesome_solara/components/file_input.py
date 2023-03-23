@@ -6,8 +6,7 @@ Currently hardcoded to be limited to one file.
 
 
 import threading
-import typing
-from typing import cast, Optional, Callable
+from typing import cast, Optional, Callable, List
 
 import solara
 import solara.hooks as hooks
@@ -17,22 +16,30 @@ from ipyvuetify.extra import FileInput as ExtraFileInput
 
 @solara.component
 def FileInput(
-    label="Drop file here",
+    label: str = "",
     on_total_progress: Optional[Callable[[float], None]] = None,
-    on_file: Optional[Callable[[FileInfo], None]] = None,
-    accept="",
+    on_file: Optional[Callable[[List[FileInfo]], None]] = None,
+    accept: str = "",
+    multiple: bool = True,
     lazy: bool = True,
     **kwargs
 ):
     """ """
     file_info, set_file_info = solara.use_state(None)
-    wired_files, set_wired_files = solara.use_state(cast(Optional[typing.List[FileInfo]], None))
+    wired_files, set_wired_files = solara.use_state(cast(Optional[List[FileInfo]], []))
 
-    file_input = ExtraFileInput.element(label=label, on_total_progress=on_total_progress, on_file_info=set_file_info, accept=accept, multiple=False, **kwargs)  # type: ignore
+    file_input = ExtraFileInput.element(
+        label=label,
+        on_total_progress=on_total_progress,
+        on_file_info=set_file_info,
+        accept=accept,
+        multiple=multiple,
+        **kwargs
+    )
 
-    def wire_files():
+    def wire_files() -> None:
         if not file_info:
-            return
+            set_wired_files([])
 
         real = cast(ExtraFileInput, solara.get_widget(file_input))
 
@@ -40,19 +47,23 @@ def FileInput(
         real.version += 1
         real.reset_stats()
 
-        set_wired_files(cast(typing.List[FileInfo], real.get_files()))
+        set_wired_files(cast(List[FileInfo], real.get_files()))
 
     solara.use_effect(wire_files, [file_info])
 
-    def handle_file(cancel: threading.Event):
-        if not wired_files:
+    def handle_file(cancel: threading.Event) -> None:
+        if not on_file:
             return
-        if on_file:
-            if not lazy:
-                wired_files[0]["data"] = wired_files[0]["file_obj"].read()
-            else:
-                wired_files[0]["data"] = None
-            on_file(wired_files[0])
+        if not wired_files:
+            on_file([])
+        if lazy:
+            for f_info in wired_files:
+                f_info["data"] = None
+        else:
+            for f_info in wired_files:
+                f_info["data"] = f_info["file_obj"].read()
+
+        on_file(wired_files)
 
     result: solara.Result = hooks.use_thread(handle_file, [wired_files])
     if result.error:
