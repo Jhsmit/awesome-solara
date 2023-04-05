@@ -2,7 +2,6 @@ import solara
 from typing import cast, Optional
 from solara.alias import rv
 
-solara.MarkdownIt
 @solara.component
 def Page():
     show_code, set_show_code = solara.use_state(False)
