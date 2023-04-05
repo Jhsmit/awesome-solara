@@ -18,6 +18,9 @@ pyecharts = "^2.0.2"
 plotly = "^5.13.1"
 jupyterlab = "^3.6.1"
 proplot = "^0.9.7"
+llvmlite = "^0.39.1"
+vaex = "^4.16.0"
+ipyvuetify = "^1.8.7"
 
 [tool.flake8]
 max-line-length = 100
