@@ -36,6 +36,7 @@ def Page():
     # Make sure to wait until bokeh JS is loaded until making the plot
     with solara.Card("Bokeh graph"):
         if show_bokeh:
+            # on first load of solara run, the graph autoscales, but then on refresh it doesn't anymore
             w = ipw.VBox([
                 BokehModel(p),
             ])
