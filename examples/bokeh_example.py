@@ -19,10 +19,6 @@ p = figure(title="Simple line example", x_axis_label='x', y_axis_label='y')
 # add a line renderer with legend and line thickness to the plot
 renderer = p.line(x='x_values', y='y_values', source=source, legend_label="Temp.", line_width=2)
 
-w = ipw.VBox([
-    BokehModel(p),
-])
-
 @solara.component
 def Page():
     output_notebook(hide_banner=True)
