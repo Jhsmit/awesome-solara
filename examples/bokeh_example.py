@@ -1,5 +1,5 @@
 import solara
-from bokeh.io import output_notebook
+from bokeh.io import output_notebook, show
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure
 import ipywidgets as ipw
@@ -21,18 +21,28 @@ renderer = p.line(x='x_values', y='y_values', source=source, legend_label="Temp.
 
 w = ipw.VBox([
     BokehModel(p),
-
 ])
 
 @solara.component
 def Page():
-    # output_notebook() # uncomment, solara run, comment, solara autoreload, ???, profit
+    output_notebook(hide_banner=True)
+
     def on_click():
         print('new data')
         data = {'x_values': [1, 2, 3, 4, 5],
                 'y_values': rng.random(5)}
         source.data = data
 
-    with solara.Card("Bokeh"):
-        solara.Button(label="Click me", on_click=on_click)
-        solara.display(w)
+    show_bokeh, set_show_bokeh = solara.use_state(False)
+    solara.Button(label="Show bokeh", on_click=lambda: set_show_bokeh(True))
+    solara.Button(label="Click me", on_click=on_click)
+
+    # Make sure to wait until bokeh JS is loaded until making the plot
+    with solara.Card("Bokeh graph"):
+        if show_bokeh:
+            w = ipw.VBox([
+                BokehModel(p),
+            ])
+            solara.display(w)
+        else:
+            solara.Text("Click 'Show bokeh' to display the bokeh plot")
