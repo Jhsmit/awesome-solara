@@ -21,6 +21,8 @@ proplot = "^0.9.7"
 llvmlite = "^0.39.1"
 vaex = "^4.16.0"
 ipyvuetify = "^1.8.7"
+bokeh = "^3.1.0"
+jupyter-bokeh = "^3.0.7"
 
 [tool.flake8]
 max-line-length = 100
