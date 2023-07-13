@@ -351,12 +351,12 @@ def FilterListItem(
         )
 
     with rv.Dialog(v_model=edit, max_width=750, on_v_model=set_edit):
-        EditFilterDialog(
-            filter_item,
-            data,
-            on_close=lambda: set_edit(False),
-            # key=uuid.uuid4().hex,
-        ).key(uuid.uuid4().hex)
+        if edit:
+            EditFilterDialog(
+                filter_item,
+                data,
+                on_close=lambda: set_edit(False),
+            )
 
 
 @solara.component
