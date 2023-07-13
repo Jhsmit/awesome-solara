@@ -226,6 +226,7 @@ def EditFilterDialog(
     filter_item: solara.Reactive[FilterItem],
     data: np.ndarray,
     on_close: Callable[[], None],
+    # key: str,
 ):
     def bin_data():
         data_f = data[~np.isnan(data)]
@@ -248,6 +249,10 @@ def EditFilterDialog(
     def make_figure():
         return create_histogram(data_f, xbins, arange, xrange)
 
+    # I suspect this is part of the issue, it should redraw the figure on every opening of the dialog
+    # but, not on every change of the slider
+    # should i pass a key as dependencies?
+    # fig = solara.use_memo(make_figure, [key])
     fig = solara.use_memo(make_figure, [])
 
     show_slider, set_show_slider = solara.use_state(True)
@@ -350,6 +355,7 @@ def FilterListItem(
             filter_item,
             data,
             on_close=lambda: set_edit(False),
+            # key=uuid.uuid4().hex,
         ).key(uuid.uuid4().hex)
 
 
